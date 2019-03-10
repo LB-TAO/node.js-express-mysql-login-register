@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="stylesheets/bootstrap.min.css" media="screen">
+    <title>Login</title>
+</head>
+<body>
+        <div class="container">
+                <form class="col-sm-offset-4 col-sm-4 form-horizontal" role="form" method="post" onsubmit="return false">
+                    <fieldset>
+                        <legend></legend>
+                        <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <p class="tc">请先登录</p>
+                        </div>
+                        <div class="panel-body m15">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-user"></span>
+                                </span>
+                                <input type="text" class="form-control" id="username" name="username" placeholder="请输入用户名" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-lock"></span>
+                                </span>
+                                <input type="text" class="form-control" id="password" name="password" placeholder="请输入密码" required>
+                            </div>
+                        </div>
+                        <strong id="popup-content" style="color:lightcoral"></strong>
+                        <div class="form-group">
+                                <button type="submit" class="btn btn-primary btn-block" id="login">登录</button>
+                        </div>
+                        <div class="form-group">
+                                <button type="button" class="btn btn-info col-sm-2 col-sm-offset-10" id="register0">注册</button>
+                        </div>
+                        </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+    <!-- <input id='username' type="text" placeholder="请输入账号">
+    <input id="password" type="password" placeholder="请输入密码">
+    <button id="login" type="button">登录</button>
+    <a href="/register">register</a>
+    <alert id="popup"></alert>
+    <strong id="popup-content"></strong>
+    <a href="#" id="close">close</a> -->
+</body>
+    <script type="text/javascript" src="javascripts/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            const username = $("#suername");
+            const password = $("#password");
+            const login = $("#login");
+            const popup = $('#popup');
+            const popupContent = $('#popup-content');
+            const close = $("#close");
+            const register0 = $('#register0');
+            register0.click(function () { 
+                window.location.href = '/register';
+             })
+            login.click(function () {
+                if(username.val() == '' || password.val() == ''){
+                    alert('账号或者密码不能为空')
+                }else{
+                    $.ajax({
+                        url:"/login/userLogin",
+                        data:{
+                            username:$('#username').val(),
+                            password:$('#password').val()
+                        },
+                        type:"POST",
+                        timeout:36000,
+                        dataType:"text",
+                        success:function(data,textStatus){
+                            console.log(data);
+                            const dataJson = eval("("+data+")");
+                            if(dataJson.code == 200){
+                                alert('登录成功');
+                                window.location.href = "/users";
+                            }else if(dataJson.code == 300){
+                                popupContent.html('账号不存在，请重新输入！');
+                            }else if(dataJson.code == 400){
+                                popupContent.html('密码有误，请重新输入');
+                            }else{
+                                popupContent.html("登录出错！")
+                            }
+                        },
+                        error:function (HMLHttpRequest,textStatus,errorThrown){
+                            alert('error:' + textStatus);
+                        }
+                    })
+                }
+
+            })
+        })
+    </script>
+</html>

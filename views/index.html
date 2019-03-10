@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="stylesheets/bootstrap.min.css" media="screen">
+    <style type="text/css">
+    .m15{ margin: 15px;}
+     .tc{ text-align: center;font-size: 18px;font-weight: 600;}
+    </style>
+</head>
+<body screen_capture_injected="true">
+    <div class="container">
+        <form class="col-sm-offset-4 col-sm-4 form-horizontal" role="form" method="post" onsubmit="return false">
+            <fieldset>
+                <legend></legend>
+
+                <div class="form-group">
+                        <button type="button" class="btn btn-info col-sm-2 col-sm-offset-10" id="register0">注册</button>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-info col-sm-2 col-sm-offset-10" id="login1">登录</button>
+                </div>
+                </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+    <script type="text/javascript" src="javascripts/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            const username = $("#suername");
+            const password = $("#password");
+            const login = $("#login");
+            const popupContent = $('#popup-content');
+            const close = $("#close");
+            const register0 = $('#register0');
+            const login1 = $('#login1');
+
+            login1.click(function () { 
+                window.location.href = '/login';
+             })
+            register0.click(function () { 
+                window.location.href = '/register';
+             })
+
+            login.click(function () {
+                if(username.val() == '' || password.val() == ''){
+                    alert('账号或者密码不能为空')
+                }else{
+                    $.ajax({
+                        url:"/login",
+                        data:{
+                            username:$('#username').val(),
+                            password:$('#password').val()
+                        },
+                        type:"POST",
+                        timeout:36000,
+                        dataType:"text",
+                        success:function(data,textStatus){
+                            console.log(data);
+                            const dataJson = eval("("+data+")");
+                            if(dataJson.code == 200){
+                                alert('登录成功');
+                                window.location.href = "/users";
+                            }else if(dataJson.code == 300){
+                                popupContent.html('账号不存在，请重新输入！');
+                            }else if(dataJson.code == 400){
+                                popupContent.html('密码有误，请重新输入');
+                            }else{
+                                popupContent.html("登录出错！")
+                            }
+                        },
+                        error:function (HMLHttpRequest,textStatus,errorThrown){
+                            alert('error:' + textStatus);
+                        }
+                    })
+                }
+
+            })
+        })
+    </script>
+</body>
+</head>
+</html>

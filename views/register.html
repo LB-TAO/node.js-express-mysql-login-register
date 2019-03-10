@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>register</title>
+    <link rel="stylesheet" href="stylesheets/bootstrap.min.css" media="screen">
+    <style type="text/css">
+    .m15{ margin: 15px;}
+     .tc{ text-align: center;font-size: 18px;font-weight: 600;}
+    </style>
+</head>
+<body screen_capture_injected="true">
+    <div class="container">
+        <form class="col-sm-offset-4 col-sm-4 form-horizontal" role="form" method="post" onsubmit="return false">
+            <fieldset>
+                <legend></legend>
+                <div class="panel panel-default">
+                <div class="panel-heading">
+                    <p class="tc">注册信息</p>
+                </div>
+                <div class="panel-body m15">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-user"></span>
+                        </span>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="请输入用户名" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-lock"></span>
+                        </span>
+                        <input type="text" class="form-control" id="password" name="password" placeholder="请输入密码" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-lock"></span>
+                        </span>
+                        <input type="text" class="form-control" id="password1" name="password1" placeholder="请再次输入密码" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-lock"></span>
+                        </span>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="请输入姓名" required>
+                    </div>
+                </div>
+                <strong id="popup-content" style="color:#b12e30"></strong>
+                <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-block" id="register">注册</button>
+                </div>
+                <div class="form-group">
+                        <button type="button" class="btn btn-info col-sm-2 col-sm-offset-10" id="login1">登录</button>
+                </div>
+                </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+    <script type="text/javascript" src="javascripts/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () { 
+            const username = $('#username');
+            const password = $("#password");
+            const password1 = $('#password1');
+            const name = $('#name');
+            const register = $('#register');
+            const popupContent = $("#popup-content");
+            const login1 = $('#login1');
+            login1.click(function () { 
+                window.location.href = '/login';
+             })
+            register.click(function () { 
+                if(username.val()=="" || password.val()==""||password1.val()==""||name.val==""){
+                    popupContent.html('注册信息不能为空！');
+                }else if(password.val() !== password1.val()){
+                    popupContent.html('两次输入的密码不一样');
+                }else{
+                    // 访问服务器，将注册信息写入数据库中
+                    $.ajax({
+                        url:"/register/userRegister",
+                        data:{
+                            username:$("#username").val(),
+                            password:$("#password").val(),
+                            name:$('#name').val()
+                        },
+                        type:"POST",
+                        timeout:36000,
+                        dataType:"text",
+                        success:function(data,textStatus){
+                            let dataJson = eval("("+data+")");
+                            if(dataJson.code === 200){
+                                alert('注册成功');
+                                window.location.href = "/";
+                            }else if(dataJson.code == 300){
+                                popupContent.html("该账号已经存在");
+                            }else if(dataJson.code == 400){
+                                popupContent.html("注册失败，请重新注册");
+                            }else {
+                                popupContent.html('注册出错');
+                            }
+                        },
+                        error:function(XMLHttpRequest,textStatus,errorThrown){
+                            alert('error:' + textStatus);
+                        }
+                    })
+                }
+             })
+         })
+    </script>
+</body>
+</head>
+</html>

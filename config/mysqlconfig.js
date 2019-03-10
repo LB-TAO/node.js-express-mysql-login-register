@@ -1,0 +1,9 @@
+module.exports={
+    mysql:{
+        host:'localhost',
+        user:'root',
+        password:'443080804a',
+        database:'express-mysql-demo',
+        connectionLimit:10
+    }
+}
